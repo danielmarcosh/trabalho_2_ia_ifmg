@@ -1,0 +1,9 @@
+# Ignorar arquivos de imagem temporários
+confusion_matrix.png
+temp_image.png
+
+# Ignorar modelo SVM
+svm_model.pkl
+
+# Ignorar arquivos de cache do Python
+__pycache__/

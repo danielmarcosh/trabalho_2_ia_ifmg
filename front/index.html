@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Diagnóstico do Relógio</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f0f0f0;
+      }
+      .container {
+        text-align: center;
+      }
+      input[type="file"] {
+        margin: 20px;
+      }
+      button {
+        padding: 10px 20px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+      #diagnostic {
+        margin-top: 20px;
+        font-size: 1.2em;
+      }
+      .loading {
+        display: none;
+        font-size: 1.2em;
+        color: #555;
+        margin-top: 20px;
+      }
+      .loading.show {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Diagnóstico do Relógio</h1>
+      <input type="file" id="imageUpload" accept="image/*" />
+      <button onclick="uploadImage()">Enviar Imagem</button>
+      <div id="diagnostic"></div>
+      <div id="loading" class="loading">Carregando...</div>
+    </div>
+
+    <script>
+      function uploadImage() {
+        const fileInput = document.getElementById("imageUpload");
+        const file = fileInput.files[0];
+        const formData = new FormData();
+        formData.append("image", file);
+
+        // Limpar a mensagem anterior e mostrar o loading
+        document.getElementById("diagnostic").innerText = "";
+        document.getElementById("loading").classList.add("show");
+
+        fetch("http://localhost:5000/predict", {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            document.getElementById(
+              "diagnostic"
+            ).innerText = `Diagnóstico: ${data.diagnosis}`;
+          })
+          .catch((error) => {
+            console.error("Erro:", error);
+            document.getElementById("diagnostic").innerText =
+              "Erro ao processar a imagem.";
+          })
+          .finally(() => {
+            // Ocultar o loading após o processamento
+            document.getElementById("loading").classList.remove("show");
+          });
+      }
+    </script>
+  </body>
+</html>
